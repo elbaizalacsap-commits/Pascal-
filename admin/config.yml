@@ -1,0 +1,25 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "actus"
+    label: "Actus"
+    files:
+      - name: "posts"
+        label: "Publications"
+        description: "Actus visibles sur l'application Échecs P.Scalium ggg."
+        file: "content/posts.json"
+        fields:
+          - label: "Publications"
+            name: "posts"
+            widget: "list"
+            label_singular: "Publication"
+            summary: "{{fields.titre}}"
+            fields:
+              - { label: "Titre", name: "titre", widget: "string" }
+              - { label: "Contenu", name: "corps", widget: "text" }
+              - { label: "Date", name: "date", widget: "datetime" }
