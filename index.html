@@ -291,8 +291,9 @@ function afficherErreurChargement(message) {
 async function demarrerApplication() {
   // chess.js : deux sources au cas où l'une des deux serait bloquée
   const sourcesChessJs = [
-    "https://cdn.jsdelivr.net/npm/chess.js@0.13.4/chess.js",
-    "https://unpkg.com/chess.js@0.13.4/chess.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js",
+    "https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js",
+    "https://unpkg.com/chess.js@0.10.3/chess.min.js",
   ];
   let chessCharge = false;
   for (const src of sourcesChessJs) {
