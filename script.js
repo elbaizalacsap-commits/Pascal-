@@ -220,6 +220,8 @@ function configurerBoutonsAction() {
 /* ============================================================
    HORLOGE
    ============================================================ */
+let dernierTicHorloge = 0;
+
 function configurerHorloge() {
   arreterHorloge();
   const actif = cadenceChoisie > 0 && modeActuel !== "enligne";
@@ -228,20 +230,25 @@ function configurerHorloge() {
   if (!actif) return;
   horloges = { w: cadenceChoisie, b: cadenceChoisie };
   majAffichageHorloges();
+  dernierTicHorloge = Date.now();
   intervalleHorloge = setInterval(() => {
     if (partie.game_over()) return arreterHorloge();
+    // On calcule le temps RÉELLEMENT écoulé depuis le dernier tic (et non un
+    // simple -1 fixe) : ainsi, même si le calcul de l'ordinateur a bloqué
+    // l'affichage pendant plusieurs secondes, ce temps de réflexion est bien
+    // retranché à son horloge une fois qu'il rejoue la main.
+    const maintenant = Date.now();
+    const ecouleSecondes = (maintenant - dernierTicHorloge) / 1000;
+    dernierTicHorloge = maintenant;
     const trait = partie.turn();
-    horloges[trait] -= 1;
+    horloges[trait] = Math.max(0, horloges[trait] - ecouleSecondes);
+    majAffichageHorloges();
     if (horloges[trait] <= 0) {
-      horloges[trait] = 0;
-      majAffichageHorloges();
       arreterHorloge();
       const gagnant = trait === "w" ? "Les noirs" : "Les blancs";
       afficherFin("Temps écoulé", `${gagnant} remportent la partie au temps.`, "⏱️");
-      return;
     }
-    majAffichageHorloges();
-  }, 1000);
+  }, 250);
 }
 function arreterHorloge() { if (intervalleHorloge) { clearInterval(intervalleHorloge); intervalleHorloge = null; } }
 function majAffichageHorloges() {
@@ -254,7 +261,8 @@ function majAffichageHorloges() {
   document.getElementById("horlogeHaut").classList.toggle("urgent", horloges[haut] <= 20);
 }
 function formaterTemps(s) {
-  const m = Math.floor(s / 60), sec = s % 60;
+  const total = Math.max(0, Math.ceil(s));
+  const m = Math.floor(total / 60), sec = total % 60;
   return `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
 
@@ -279,9 +287,11 @@ function dessinerPlateau() {
       div.dataset.case = nomCase;
 
       if (carre) {
-        const symbole = carre.color === "w" ? carre.type.toUpperCase() : carre.type;
+        // On utilise toujours le symbole "plein" (creux vs plein selon la police
+        // du téléphone rendait la couleur imprévisible une fois combinée à nos
+        // propres couleurs CSS) — la couleur réelle est fixée à 100% par la classe.
         const classeCouleur = carre.color === "w" ? "piece-blanche" : "piece-noire";
-        div.innerHTML = `<span class="case-piece ${classeCouleur}">${SYMBOLES[symbole]}</span>`;
+        div.innerHTML = `<span class="case-piece ${classeCouleur}">${SYMBOLES[carre.type]}</span>`;
       }
       if (nomCase === caseSelectionnee) div.classList.add("selectionnee");
       if (coupsPossibles.includes(nomCase)) div.classList.add("coup-possible");
@@ -362,10 +372,9 @@ function demanderPromotion(from, to) {
   const grille = document.getElementById("grillePromotion");
   grille.innerHTML = "";
   ["q", "r", "b", "n"].forEach(type => {
-    const symbole = couleur === "w" ? type.toUpperCase() : type;
     const btn = document.createElement("button");
-    btn.className = "piece-promotion";
-    btn.textContent = SYMBOLES[symbole];
+    btn.className = "piece-promotion " + (couleur === "w" ? "piece-blanche" : "piece-noire");
+    btn.textContent = SYMBOLES[type];
     btn.title = NOMS_PIECES[type];
     btn.addEventListener("click", () => {
       document.getElementById("superpositionPromotion").style.display = "none";
