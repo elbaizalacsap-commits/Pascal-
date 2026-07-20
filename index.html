@@ -330,6 +330,22 @@ window.addEventListener("error", e => {
 demarrerApplication();
 </script>
 
+<!-- Netlify Identity : nécessaire ICI (page d'accueil) car c'est là que le lien
+     d'invitation par email amène en premier — sans ce script sur cette page,
+     la fenêtre "définir ton mot de passe" ne peut jamais apparaître. -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
