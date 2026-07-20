@@ -160,23 +160,28 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 }
 .case-plateau { position: relative; display: flex; align-items: center; justify-content: center; font-size: clamp(20px, 6vw, 36px); user-select: none; }
 .case-plateau.selectionnee::after { content: ""; position: absolute; inset: 0; background: var(--or); opacity: 0.35; }
-.case-plateau.coup-possible::after { content: ""; position: absolute; width: 26%; height: 26%; border-radius: 50%; background: var(--or); opacity: 0.55; }
+.case-plateau.coup-possible::after {
+  content: ""; position: absolute; width: 24%; height: 24%; border-radius: 50%;
+  background: #1f6b52;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.85);
+}
 .case-plateau.dernier-coup { box-shadow: inset 0 0 0 999px rgba(201,162,39,0.2); }
 .case-plateau.suggestion { box-shadow: inset 0 0 0 3px var(--vert-clair); }
 .case-piece { position: relative; z-index: 1; transition: transform 0.15s ease; }
 .case-piece.qui-bouge { animation: sautille 0.25s ease; }
 @keyframes sautille { 0% { transform: scale(1); } 50% { transform: scale(1.18); } 100% { transform: scale(1); } }
 
-/* Couleur des pièces : toujours fixe selon leur camp, jamais selon la couleur de la case */
-.case-piece.piece-blanche {
-  color: #fbf7ec;
-  -webkit-text-stroke: 1.3px #241c0c;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+/* Couleur des pièces : vraiment blanches / vraiment noires, fixe selon leur camp
+   (jamais selon la couleur de la case), avec juste un fin trait de définition. */
+.piece-blanche {
+  color: #ffffff;
+  -webkit-text-stroke: 0.9px #2a2a2a;
+  text-shadow: 0 1px 1.5px rgba(0,0,0,0.5);
 }
-.case-piece.piece-noire {
-  color: #1a1712;
-  -webkit-text-stroke: 1.3px #fbf7ec;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+.piece-noire {
+  color: #0e0e0e;
+  -webkit-text-stroke: 0.9px #ffffff;
+  text-shadow: 0 1px 1.5px rgba(0,0,0,0.35);
 }
 
 /* Thème P.Scalium ggg (par défaut) — crème et or, plus de vert foncé */
@@ -188,8 +193,9 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 /* Thème néon */
 .theme-neon .case-plateau.claire { background: #1c2b35; }
 .theme-neon .case-plateau.sombre { background: #0f181f; }
-.theme-neon .case-piece.piece-blanche { -webkit-text-stroke-color: #4dfcff; text-shadow: 0 0 6px #4dfcff; }
-.theme-neon .case-piece.piece-noire { -webkit-text-stroke-color: #ff4de3; text-shadow: 0 0 6px #ff4de3; }
+.theme-neon .piece-blanche { -webkit-text-stroke-color: #4dfcff; text-shadow: 0 0 6px #4dfcff; }
+.theme-neon .piece-noire { -webkit-text-stroke-color: #ff4de3; text-shadow: 0 0 6px #ff4de3; }
+.theme-neon .case-plateau.coup-possible::after { background: #4dfcff; box-shadow: 0 0 8px 2px #4dfcff; }
 /* Thème minimaliste */
 .theme-minimal .case-plateau.claire { background: #f3f3f0; }
 .theme-minimal .case-plateau.sombre { background: #3a3d40; }
@@ -226,7 +232,7 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 
 /* Promotion */
 .grille-promotion { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.piece-promotion { background: var(--creme); border: 1px solid var(--bordure); border-radius: 10px; font-size: 30px; padding: 10px 0; color: var(--vert-encre); }
+.piece-promotion { background: var(--creme); border: 1px solid var(--bordure); border-radius: 10px; font-size: 30px; padding: 10px 0; }
 .piece-promotion:active { transform: scale(0.94); }
 
 /* Analyse */
