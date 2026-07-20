@@ -15,6 +15,10 @@
 </head>
 <body>
 
+<div id="erreurChargement" style="display:none; background:#b8493a; color:#fff; padding:14px 16px; text-align:center; font-family:sans-serif; font-size:13.5px; position:relative; z-index:999;">
+  ⚠️ Une ressource nécessaire n'a pas pu se charger. Vérifie ta connexion puis recharge la page. <span id="detailErreur"></span>
+</div>
+
 <!-- ============== ÉCRAN : MENU PRINCIPAL ============== -->
 <section id="ecranMenu" class="ecran ecran--menu actif">
   <div class="fondEchiquier" id="fondAnime" aria-hidden="true"></div>
@@ -268,13 +272,62 @@
   </div>
 </div>
 
-<!-- Librairies (chargées via CDN) -->
-<script src="https://unpkg.com/chess.js@0.13.4/chess.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Chargement des librairies avec source de secours si le premier CDN échoue -->
+<script>
+function chargerScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error("Échec de chargement : " + src));
+    document.body.appendChild(s);
+  });
+}
+function afficherErreurChargement(message) {
+  document.getElementById("erreurChargement").style.display = "block";
+  document.getElementById("detailErreur").textContent = message || "";
+}
 
-<script src="supabase-config.js"></script>
-<script src="moteur.js"></script>
-<script src="script.js"></script>
+async function demarrerApplication() {
+  // chess.js : deux sources au cas où l'une des deux serait bloquée
+  const sourcesChessJs = [
+    "https://cdn.jsdelivr.net/npm/chess.js@0.13.4/chess.js",
+    "https://unpkg.com/chess.js@0.13.4/chess.js",
+  ];
+  let chessCharge = false;
+  for (const src of sourcesChessJs) {
+    try {
+      await chargerScript(src);
+      if (typeof Chess !== "undefined") { chessCharge = true; break; }
+    } catch (e) { /* on tente la source suivante */ }
+  }
+  if (!chessCharge) {
+    afficherErreurChargement("(bibliothèque d'échecs indisponible)");
+    return;
+  }
+
+  // Supabase : optionnel, le mode en ligne sera juste désactivé si ça échoue
+  try {
+    await chargerScript("https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js");
+  } catch (e) { /* le mode en ligne affichera un message d'indisponibilité */ }
+
+  try {
+    await chargerScript("supabase-config.js");
+    await chargerScript("moteur.js");
+    await chargerScript("script.js");
+  } catch (e) {
+    afficherErreurChargement("(erreur au démarrage de l'application)");
+  }
+}
+
+window.addEventListener("error", e => {
+  if (document.getElementById("erreurChargement").style.display !== "block") {
+    afficherErreurChargement("(" + (e.message || "erreur inconnue") + ")");
+  }
+});
+
+demarrerApplication();
+</script>
 
 <script>
 if ("serviceWorker" in navigator) {
