@@ -280,7 +280,8 @@ function dessinerPlateau() {
 
       if (carre) {
         const symbole = carre.color === "w" ? carre.type.toUpperCase() : carre.type;
-        div.innerHTML = `<span class="case-piece">${SYMBOLES[symbole]}</span>`;
+        const classeCouleur = carre.color === "w" ? "piece-blanche" : "piece-noire";
+        div.innerHTML = `<span class="case-piece ${classeCouleur}">${SYMBOLES[symbole]}</span>`;
       }
       if (nomCase === caseSelectionnee) div.classList.add("selectionnee");
       if (coupsPossibles.includes(nomCase)) div.classList.add("coup-possible");

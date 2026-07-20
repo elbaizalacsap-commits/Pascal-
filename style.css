@@ -163,23 +163,36 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 .case-plateau.coup-possible::after { content: ""; position: absolute; width: 26%; height: 26%; border-radius: 50%; background: var(--or); opacity: 0.55; }
 .case-plateau.dernier-coup { box-shadow: inset 0 0 0 999px rgba(201,162,39,0.2); }
 .case-plateau.suggestion { box-shadow: inset 0 0 0 3px var(--vert-clair); }
-.case-piece { position: relative; z-index: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); transition: transform 0.15s ease; }
+.case-piece { position: relative; z-index: 1; transition: transform 0.15s ease; }
 .case-piece.qui-bouge { animation: sautille 0.25s ease; }
 @keyframes sautille { 0% { transform: scale(1); } 50% { transform: scale(1.18); } 100% { transform: scale(1); } }
 
-/* Thème P.Scalium ggg (par défaut) */
-.theme-historique .case-plateau.claire { background: #f0e6c8; color: #2c3b2f; }
-.theme-historique .case-plateau.sombre { background: #33513f; color: #f0e6c8; }
+/* Couleur des pièces : toujours fixe selon leur camp, jamais selon la couleur de la case */
+.case-piece.piece-blanche {
+  color: #fbf7ec;
+  -webkit-text-stroke: 1.3px #241c0c;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+}
+.case-piece.piece-noire {
+  color: #1a1712;
+  -webkit-text-stroke: 1.3px #fbf7ec;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+
+/* Thème P.Scalium ggg (par défaut) — crème et or, plus de vert foncé */
+.theme-historique .case-plateau.claire { background: #f5ecd6; }
+.theme-historique .case-plateau.sombre { background: #c79a4b; }
 /* Thème bois classique */
-.theme-bois .case-plateau.claire { background: #e8d3ab; color: #241708; }
-.theme-bois .case-plateau.sombre { background: #93602f; color: #1c1006; }
+.theme-bois .case-plateau.claire { background: #e8d3ab; }
+.theme-bois .case-plateau.sombre { background: #93602f; }
 /* Thème néon */
-.theme-neon .case-plateau.claire { background: #16222b; color: #4dfcff; }
-.theme-neon .case-plateau.sombre { background: #0a1116; color: #ff4de3; }
-.theme-neon .case-piece { filter: drop-shadow(0 0 6px currentColor); }
+.theme-neon .case-plateau.claire { background: #1c2b35; }
+.theme-neon .case-plateau.sombre { background: #0f181f; }
+.theme-neon .case-piece.piece-blanche { -webkit-text-stroke-color: #4dfcff; text-shadow: 0 0 6px #4dfcff; }
+.theme-neon .case-piece.piece-noire { -webkit-text-stroke-color: #ff4de3; text-shadow: 0 0 6px #ff4de3; }
 /* Thème minimaliste */
-.theme-minimal .case-plateau.claire { background: #f3f3f0; color: #16181a; }
-.theme-minimal .case-plateau.sombre { background: #1a1c1e; color: #f3f3f0; }
+.theme-minimal .case-plateau.claire { background: #f3f3f0; }
+.theme-minimal .case-plateau.sombre { background: #3a3d40; }
 
 /* ===================== BARRE D'ACTIONS ===================== */
 .barre-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 520px; width: 100%; }
@@ -203,10 +216,10 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; }
 .vignette-theme { background: var(--creme); border: 1px solid var(--bordure); border-radius: 10px; padding: 10px; font-size: 12.5px; color: var(--vert-encre); font-weight: 600; }
 .vignette-theme.actif { border-color: var(--or); }
 .vignette-apercu { display: block; height: 44px; border-radius: 6px; margin-bottom: 8px; }
-.theme-historique-apercu { background: linear-gradient(135deg, #f0e6c8 50%, #33513f 50%); }
+.theme-historique-apercu { background: linear-gradient(135deg, #f5ecd6 50%, #c79a4b 50%); }
 .theme-bois-apercu { background: linear-gradient(135deg, #e8d3ab 50%, #93602f 50%); }
-.theme-neon-apercu { background: linear-gradient(135deg, #16222b 50%, #0a1116 50%); }
-.theme-minimal-apercu { background: linear-gradient(135deg, #f3f3f0 50%, #1a1c1e 50%); }
+.theme-neon-apercu { background: linear-gradient(135deg, #1c2b35 50%, #0f181f 50%); }
+.theme-minimal-apercu { background: linear-gradient(135deg, #f3f3f0 50%, #3a3d40 50%); }
 
 .fin-icone { font-size: 46px; margin-bottom: 6px; color: var(--or); }
 .boutons-fin { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
